@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,7 +23,7 @@ import javax.swing.border.EmptyBorder;
 import server.Server;
 import server.ServerApp;
 
-public class ClientApp extends JFrame implements ActionListener, KeyListener{
+public class ClientApp extends JFrame implements ActionListener, KeyListener {
 	private JPanel contentPane;
 	private JTextField inputMessage_textField;
 	private JLabel username_label;
@@ -33,6 +34,7 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 	private JTextField serverPort_textField;
 	private JButton addServer_btn;
 	Client client;
+	String name;
 	ArrayList<String> serverList = new ArrayList<String>();
 
 	/**
@@ -40,21 +42,33 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 	 */
 	public static void main(String[] args) {
 		ClientApp frame = new ClientApp();
-		frame.setVisible(true);		
+		frame.setVisible(true);
 	}
-
 
 	/**
 	 * Create the frame.
 	 */
-	public ClientApp() {		
+	public ClientApp() {
+		
+		// before starting, choose a name for yourself first! 
+		while (true) {
+			String inpName = JOptionPane.showInputDialog(this, "取個名字吧!(◔ д◔)~");
+			if (inpName == null){
+				System.exit(1);
+			}else if (!inpName.isEmpty()){
+				name = inpName;
+				break;
+			}
+				
+		}
+
 		init();
 		renderGUI();
-		
+
 		client = new Client(this);
 	}
-	
-	void init(){
+
+	void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 420);
 		this.setTitle("Client");
@@ -64,7 +78,7 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 	}
-	
+
 	void renderGUI() {
 		Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
 
@@ -89,7 +103,7 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 		messageBox_TextArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		messageBox_TextArea.setLineWrap(true);
 		messageBox_TextArea.setBackground(new Color(240, 255, 240));
-		messageBox_TextArea.setBounds(170, 40, 400, 267);
+		messageBox_TextArea.setBounds(170, 40, 404, 267);
 		messageBox_TextArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		contentPane.add(messageBox_TextArea);
@@ -102,95 +116,101 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 		contentPane.add(inputMessage_textField);
 
 		send_btn = new JButton("送出");
+		send_btn.setBackground(new Color(255, 192, 203));
 		send_btn.setBounds(513, 317, 61, 23);
 		send_btn.addActionListener(this);
 		contentPane.add(send_btn);
 
-		username_label = new JLabel("魚尾尾");
+		username_label = new JLabel(name);
 		username_label.setForeground(new Color(240, 128, 128));
 		username_label.setFont(new Font("華康中圓體", Font.PLAIN, 18));
-		username_label.setBounds(106, 10, 150, 23);
+		username_label.setBounds(106, 10, 129, 23);
 		contentPane.add(username_label);
-		
-		lblServerListport = new JLabel("Server List (port)");
+
+		lblServerListport = new JLabel("ServerList (port)");
 		lblServerListport.setForeground(new Color(100, 149, 237));
-		lblServerListport.setFont(new Font("Dialog", Font.PLAIN, 18));
-		lblServerListport.setBounds(10, 40, 150, 23);
+		lblServerListport.setFont(new Font("SetoFont", Font.PLAIN, 18));
+		lblServerListport.setBounds(10, 40, 161, 23);
 		contentPane.add(lblServerListport);
-		
+
 		serverPort_textField = new JTextField();
-		serverPort_textField.setBounds(10, 317, 76, 23);
-		contentPane.add(serverPort_textField);
+		serverPort_textField.setBounds(10, 317, 82, 23);
 		serverPort_textField.setColumns(10);
-		
+		serverPort_textField.addKeyListener(this);
+		contentPane.add(serverPort_textField);
+
 		addServer_btn = new JButton("加入");
+		addServer_btn.setBackground(new Color(255, 192, 203));
 		addServer_btn.setBounds(99, 317, 61, 23);
 		addServer_btn.addActionListener(this);
 		contentPane.add(addServer_btn);
 	}
-	
-	public void actionPerformed(ActionEvent e){		
-		if(e.getSource() == send_btn){
-			send_btn_Click();			
-		}else if(e.getSource() == addServer_btn){
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == 10) {
+			if (e.getSource() == inputMessage_textField) {
+				send_btn_Click();
+			} else if (e.getSource() == serverPort_textField) {
+				addServer_btn_Click();
+			}
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == send_btn) {
+			send_btn_Click();
+		} else if (e.getSource() == addServer_btn) {
 			addServer_btn_Click();
 		}
 	}
-	
+
 	private void addServer_btn_Click() {
-		try{
+		try {
 			int toConnectPort = Integer.parseInt(serverPort_textField.getText());
 			client.connectToServer(toConnectPort);
 			serverPort_textField.setText("");
-		}catch(NumberFormatException ne){
+		} catch (NumberFormatException ne) {
 			System.out.println("請輸入數字");
+			showMessage("請輸入數字!爸托! (◔ д◔)");
 		}
-		
+
 	}
 
-
-	@Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == 10 && e.getSource() == inputMessage_textField){
-        	send_btn_Click();
-        }
-    }
-
-
-	
 	private void send_btn_Click() {
 		String toSendMsg = inputMessage_textField.getText();
-		client.broadcast(toSendMsg);
-		inputMessage_textField.setText("");
+		if (toSendMsg == "") {
+			client.broadcast(toSendMsg);
+			inputMessage_textField.setText("");
+		}
 	}
 
-
-	public void setPortDisplayed(int inpPort) {
-		username_label.setText(Integer.toString(inpPort));
+	public void showMessage(String msg) {
+		JOptionPane.showMessageDialog(this, msg);
 	}
-	
-	public void addToMessageBox(String msg){
+
+	public void addToMessageBox(String msg) {
 		messageBox_TextArea.append(msg + "\n");
 	}
-	
-	public String getUsername(){
+
+	public String getUsername() {
 		return username_label.getText();
 	}
-	
-	public void setUsername(String inpName){
+
+	public void setUsername(String inpName) {
 		username_label.setText(inpName);
 	}
-	
-	public void addServertoDisplay(String inpPort){
+
+	public void addServertoDisplay(String inpPort) {
 		serverList.add(inpPort);
 		serverList_textArea.append(inpPort + "\n");
 	}
-	
-	public void removeServerFromDisplay(String inpPort){
+
+	public void removeServerFromDisplay(String inpPort) {
 		serverList.remove(inpPort);
-		
+
 		serverList_textArea.setText("");
-		for(String u: serverList){
+		for (String u : serverList) {
 			serverList_textArea.append(u + "\n");
 		}
 	}
@@ -198,13 +218,12 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

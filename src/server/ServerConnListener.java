@@ -25,6 +25,9 @@ public class ServerConnListener extends Thread{
         }
     }
 	
+	/*
+	 * this block will keep listening messages sent from client
+	 */
     public void run() {
         try {
         	//get username and update userlist
@@ -40,7 +43,6 @@ public class ServerConnListener extends Thread{
             // This may happen because of the fact that client
             // application is closed.
             System.out.println("Error reading message!");
-            System.out.println(e.getMessage());
         }
         PARENT.serverApp.addToMessageBox(username + " 已離開");
         System.out.println("Socket closed!");

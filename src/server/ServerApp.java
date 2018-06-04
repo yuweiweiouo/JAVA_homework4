@@ -90,7 +90,7 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		messageBox_TextArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		messageBox_TextArea.setLineWrap(true);
 		messageBox_TextArea.setBackground(new Color(240, 255, 240));
-		messageBox_TextArea.setBounds(170, 40, 400, 267);
+		messageBox_TextArea.setBounds(170, 40, 404, 267);
 		messageBox_TextArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		contentPane.add(messageBox_TextArea);
@@ -103,6 +103,7 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		contentPane.add(inputMessage_textField);
 
 		send_btn = new JButton("送出");
+		send_btn.setBackground(new Color(255, 192, 203));
 		send_btn.setBounds(513, 317, 61, 23);
 		send_btn.addActionListener(this);
 		contentPane.add(send_btn);
@@ -115,28 +116,32 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		
 		JLabel lblUserList = new JLabel("User List");
 		lblUserList.setForeground(new Color(100, 149, 237));
-		lblUserList.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblUserList.setFont(new Font("SetoFont", Font.PLAIN, 18));
 		lblUserList.setBounds(10, 40, 126, 23);
 		contentPane.add(lblUserList);
 	}
 	
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == 10 && e.getSource() == inputMessage_textField){
+			send_btn_Click();
+		}
+	}
+	
+	@Override
 	public void actionPerformed(ActionEvent e){		
 		if(e.getSource() == send_btn){
 			send_btn_Click();			
 		}
 	}
 	
-	@Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == 10 && e.getSource() == inputMessage_textField){
-        	send_btn_Click();
-        }
-    }
 	
 	private void send_btn_Click() {
 		String toSendMsg = inputMessage_textField.getText();
-		server.broadcast(toSendMsg);
-		inputMessage_textField.setText("");
+		if(toSendMsg == ""){
+			server.broadcast(toSendMsg);
+			inputMessage_textField.setText("");			
+		}
 	}
 
 	public void setPortDisplayed(int inpPort) {
