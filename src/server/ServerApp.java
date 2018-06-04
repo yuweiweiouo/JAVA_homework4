@@ -22,6 +22,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 
 public class ServerApp extends JFrame implements ActionListener, KeyListener{
 
@@ -33,6 +34,8 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 	private JButton send_btn;
 	Server server;
 	ArrayList<String> userList = new ArrayList<String>();
+	private JScrollPane scrollPane;
+	private JScrollPane scrollPane_1;
 	
 	/**
 	 * Launch the application.
@@ -74,26 +77,32 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		portNumber_label.setFont(new Font("SetoFont-SP", Font.PLAIN, 18));
 		portNumber_label.setBounds(10, 10, 126, 23);
 		contentPane.add(portNumber_label);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 73, 150, 267);
+		contentPane.add(scrollPane);
 
 		userList_textArea = new JTextArea();
+		scrollPane.setViewportView(userList_textArea);
 		userList_textArea.setLineWrap(true);
 		userList_textArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
-		userList_textArea.setBounds(10, 73, 150, 267);
 		userList_textArea.setBackground(new Color(255, 239, 213));
 		userList_textArea.setEditable(false);
 		userList_textArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		contentPane.add(userList_textArea);
+		
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(170, 40, 404, 267);
+		contentPane.add(scrollPane_1);
 
 		messageBox_TextArea = new JTextArea();
+		scrollPane_1.setViewportView(messageBox_TextArea);
 		messageBox_TextArea.setEditable(false);
 		messageBox_TextArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		messageBox_TextArea.setLineWrap(true);
 		messageBox_TextArea.setBackground(new Color(240, 255, 240));
-		messageBox_TextArea.setBounds(170, 40, 404, 267);
 		messageBox_TextArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		contentPane.add(messageBox_TextArea);
 
 		inputMessage_textField = new JTextField();
 		inputMessage_textField.setToolTipText("");
@@ -103,6 +112,7 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		contentPane.add(inputMessage_textField);
 
 		send_btn = new JButton("送出");
+		send_btn.setFont(new Font("華康中圓體", Font.PLAIN, 12));
 		send_btn.setBackground(new Color(255, 192, 203));
 		send_btn.setBounds(513, 317, 61, 23);
 		send_btn.addActionListener(this);
@@ -138,7 +148,7 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 	
 	private void send_btn_Click() {
 		String toSendMsg = inputMessage_textField.getText();
-		if(toSendMsg == ""){
+		if(toSendMsg != ""){
 			server.broadcast(toSendMsg);
 			inputMessage_textField.setText("");			
 		}
