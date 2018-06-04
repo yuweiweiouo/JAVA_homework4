@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -17,20 +19,21 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
 import server.Server;
 import server.ServerApp;
 
-public class ClientApp extends JFrame implements ActionListener{
+public class ClientApp extends JFrame implements ActionListener, KeyListener{
 	private JPanel contentPane;
 	private JTextField inputMessage_textField;
 	private JLabel username_label;
 	private JTextArea messageBox_TextArea;
 	private JButton send_btn;
 	private JTextArea serverList_textArea;
+	private JLabel lblServerListport;
+	private JTextField serverPort_textField;
+	private JButton addServer_btn;
 	Client client;
 	ArrayList<String> serverList = new ArrayList<String>();
-	
 
 	/**
 	 * Launch the application.
@@ -53,7 +56,7 @@ public class ClientApp extends JFrame implements ActionListener{
 	
 	void init(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 400);
+		setBounds(100, 100, 600, 420);
 		this.setTitle("Client");
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(224, 255, 255));
@@ -74,16 +77,14 @@ public class ClientApp extends JFrame implements ActionListener{
 		serverList_textArea = new JTextArea();
 		serverList_textArea.setLineWrap(true);
 		serverList_textArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
-		serverList_textArea.setBounds(10, 40, 150, 300);
+		serverList_textArea.setBounds(10, 73, 150, 234);
 		serverList_textArea.setBackground(new Color(255, 239, 213));
 		serverList_textArea.setEditable(false);
-		serverList_textArea.setEnabled(false);
 		serverList_textArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		contentPane.add(serverList_textArea);
 
 		messageBox_TextArea = new JTextArea();
-		messageBox_TextArea.setEnabled(false);
 		messageBox_TextArea.setEditable(false);
 		messageBox_TextArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		messageBox_TextArea.setLineWrap(true);
@@ -97,6 +98,7 @@ public class ClientApp extends JFrame implements ActionListener{
 		inputMessage_textField.setToolTipText("");
 		inputMessage_textField.setBounds(170, 317, 333, 23);
 		inputMessage_textField.setColumns(10);
+		inputMessage_textField.addKeyListener(this);
 		contentPane.add(inputMessage_textField);
 
 		send_btn = new JButton("送出");
@@ -109,13 +111,52 @@ public class ClientApp extends JFrame implements ActionListener{
 		username_label.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		username_label.setBounds(106, 10, 150, 23);
 		contentPane.add(username_label);
+		
+		lblServerListport = new JLabel("Server List (port)");
+		lblServerListport.setForeground(new Color(100, 149, 237));
+		lblServerListport.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblServerListport.setBounds(10, 40, 150, 23);
+		contentPane.add(lblServerListport);
+		
+		serverPort_textField = new JTextField();
+		serverPort_textField.setBounds(10, 317, 76, 23);
+		contentPane.add(serverPort_textField);
+		serverPort_textField.setColumns(10);
+		
+		addServer_btn = new JButton("加入");
+		addServer_btn.setBounds(99, 317, 61, 23);
+		addServer_btn.addActionListener(this);
+		contentPane.add(addServer_btn);
 	}
 	
 	public void actionPerformed(ActionEvent e){		
 		if(e.getSource() == send_btn){
 			send_btn_Click();			
+		}else if(e.getSource() == addServer_btn){
+			addServer_btn_Click();
 		}
 	}
+	
+	private void addServer_btn_Click() {
+		try{
+			int toConnectPort = Integer.parseInt(serverPort_textField.getText());
+			client.connectToServer(toConnectPort);
+			serverPort_textField.setText("");
+		}catch(NumberFormatException ne){
+			System.out.println("請輸入數字");
+		}
+		
+	}
+
+
+	@Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == 10 && e.getSource() == inputMessage_textField){
+        	send_btn_Click();
+        }
+    }
+
+
 	
 	private void send_btn_Click() {
 		String toSendMsg = inputMessage_textField.getText();
@@ -154,5 +195,16 @@ public class ClientApp extends JFrame implements ActionListener{
 		}
 	}
 
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }

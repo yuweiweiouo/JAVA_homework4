@@ -11,7 +11,7 @@ public class ClientConnListener extends Thread{
 	public Socket socket;
 	public DataInputStream in;
 	public DataOutputStream out;
-	public int port = 1111;
+	public int port;
 	
 	public ClientConnListener(Client p, Socket s) {
         PARENT 	= p;

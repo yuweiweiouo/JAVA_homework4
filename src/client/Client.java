@@ -14,12 +14,11 @@ public class Client {
 	public Client(ClientApp cp) {
 		clientApp = cp;
 		handles = new Vector<ClientConnListener>();
-		connectToServer();
 	}
 	
-    public void connectToServer() {
+    public void connectToServer(int inpPort) {
         try {
-            Socket socket = new Socket(serverHostname, 1111);
+            Socket socket = new Socket(serverHostname, inpPort);
             addServer(socket);
         } catch (Exception ex) {        	
             ex.printStackTrace();

@@ -49,7 +49,8 @@ public class ServerConnListener extends Thread{
 	
 	public void sendMessage(String msg) {
         try {
-
+        	System.out.println("Send to clients: " + msg);
+        	out.writeUTF(msg);
         } catch (Exception ex) {
             System.out.println("Error sending message");
         }

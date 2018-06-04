@@ -15,17 +15,22 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 
-public class ServerApp extends JFrame {
+public class ServerApp extends JFrame implements ActionListener, KeyListener{
 
 	private JPanel contentPane;
 	private JTextField inputMessage_textField;
 	private JLabel port_label;
 	private JTextArea messageBox_TextArea;
 	private JTextArea userList_textArea;
+	private JButton send_btn;
 	Server server;
 	ArrayList<String> userList = new ArrayList<String>();
 	
@@ -49,7 +54,7 @@ public class ServerApp extends JFrame {
 	
 	void init(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 400);
+		setBounds(100, 100, 600, 420);
 		this.setTitle("Server");
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(224, 255, 255));
@@ -73,16 +78,14 @@ public class ServerApp extends JFrame {
 		userList_textArea = new JTextArea();
 		userList_textArea.setLineWrap(true);
 		userList_textArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
-		userList_textArea.setBounds(10, 40, 150, 300);
+		userList_textArea.setBounds(10, 73, 150, 267);
 		userList_textArea.setBackground(new Color(255, 239, 213));
 		userList_textArea.setEditable(false);
-		userList_textArea.setEnabled(false);
 		userList_textArea
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		contentPane.add(userList_textArea);
 
 		messageBox_TextArea = new JTextArea();
-		messageBox_TextArea.setEnabled(false);
 		messageBox_TextArea.setEditable(false);
 		messageBox_TextArea.setFont(new Font("華康中圓體", Font.PLAIN, 18));
 		messageBox_TextArea.setLineWrap(true);
@@ -96,10 +99,12 @@ public class ServerApp extends JFrame {
 		inputMessage_textField.setToolTipText("");
 		inputMessage_textField.setBounds(170, 317, 333, 23);
 		inputMessage_textField.setColumns(10);
+		inputMessage_textField.addKeyListener(this);
 		contentPane.add(inputMessage_textField);
 
-		JButton send_btn = new JButton("送出");
+		send_btn = new JButton("送出");
 		send_btn.setBounds(513, 317, 61, 23);
+		send_btn.addActionListener(this);
 		contentPane.add(send_btn);
 
 		port_label = new JLabel("1111");
@@ -107,6 +112,31 @@ public class ServerApp extends JFrame {
 		port_label.setFont(new Font("SetoFont-SP", Font.PLAIN, 18));
 		port_label.setBounds(134, 10, 150, 23);
 		contentPane.add(port_label);
+		
+		JLabel lblUserList = new JLabel("User List");
+		lblUserList.setForeground(new Color(100, 149, 237));
+		lblUserList.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblUserList.setBounds(10, 40, 126, 23);
+		contentPane.add(lblUserList);
+	}
+	
+	public void actionPerformed(ActionEvent e){		
+		if(e.getSource() == send_btn){
+			send_btn_Click();			
+		}
+	}
+	
+	@Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == 10 && e.getSource() == inputMessage_textField){
+        	send_btn_Click();
+        }
+    }
+	
+	private void send_btn_Click() {
+		String toSendMsg = inputMessage_textField.getText();
+		server.broadcast(toSendMsg);
+		inputMessage_textField.setText("");
 	}
 
 	public void setPortDisplayed(int inpPort) {
@@ -129,5 +159,17 @@ public class ServerApp extends JFrame {
 		for(String u: userList){
 			userList_textArea.append(u + "\n");
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
