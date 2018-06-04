@@ -30,6 +30,7 @@ public class ClientConnListener extends Thread{
     public void run() {
     	
         try {
+        	socket.getPort();
         	PARENT.clientApp.addServertoDisplay(Integer.toString(port));        	
         	System.out.println("Your name: " + PARENT.clientApp.getUsername());
         	sendMessage(PARENT.clientApp.getUsername());
