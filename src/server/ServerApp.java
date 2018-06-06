@@ -150,7 +150,8 @@ public class ServerApp extends JFrame implements ActionListener, KeyListener{
 		String toSendMsg = inputMessage_textField.getText();
 		if(toSendMsg != ""){
 			server.broadcast(toSendMsg);
-			inputMessage_textField.setText("");			
+			inputMessage_textField.setText("");		
+			addToMessageBox("Server: " + toSendMsg);
 		}
 	}
 

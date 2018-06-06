@@ -194,6 +194,7 @@ public class ClientApp extends JFrame implements ActionListener, KeyListener {
 			if (toSendMsg != "") {
 				client.broadcast(toSendMsg);
 				inputMessage_textField.setText("");
+				addToMessageBox(getUsername() + ": " + toSendMsg);
 			}
 		} catch (Exception e) {			
 			e.printStackTrace();
